@@ -54,3 +54,11 @@ void Enemy::update() {
 		return false;
 	}
 
+	void Enemy::setItList(list<ArkanoidObject*>::iterator _it) {
+		it = _it;
+	}
+
+	void Enemy::destroy() {
+		game->killObject(it);
+	}
+

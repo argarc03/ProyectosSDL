@@ -80,7 +80,7 @@ const uint NUM_DIGITS_LEVEL = 2;
 const uint WALL_COLLIDES_OFFSET = 6;
 const double REFLECTION = 0.25;
 
-const int REWARD_PROBABILITY = 1;
+const int REWARD_PROBABILITY = 100;
 const uint REWARD_WIDTH = 40;
 const uint REWARD_HEIGHT = 20;
 const int REWARD_SPEED = 3;
@@ -92,7 +92,7 @@ const uint LASER_HEIGHT = 23;
 const int LASER_SPEED = 10;
 const uint LASER_DELAY = 40;
 
-const int ENEMY_PROBABILITY = 5;
+const int ENEMY_PROBABILITY = 50;
 const int ENEMY_SPEED = 3;
 const int ENEMY_WIDTH = 30;
 const int ENEMY_HEIGHT = 40;
@@ -166,6 +166,7 @@ private:
 	Ball* ball3 = nullptr;
 	Paddle* paddle = nullptr;
 	Enemy* enemy = nullptr;
+	uint numEnemies = 0;
 
 	ScreenText* gameOverText = nullptr;
 	//Text* timeText = nullptr;
@@ -256,6 +257,8 @@ public:
 
 	bool isPaused() { return paused; };
 	//bool ballInside
+
+	void spawnEnemy();
 };
 
 

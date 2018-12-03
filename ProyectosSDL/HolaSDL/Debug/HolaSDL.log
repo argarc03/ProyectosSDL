@@ -1,4 +1,4 @@
 ﻿  main.cpp
 c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': redefinición de macro
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\malloc.h(120): note: vea la definición anterior de '_malloca'
-LINK : fatal error LNK1104: no se puede abrir el archivo 'SDL2_ttf.libkernel32.lib'
+  HolaSDL.vcxproj -> D:\Universidad\TPV-P2\ProyectosSDL\ProyectosSDL\bin\HolaSDLDebug.exe

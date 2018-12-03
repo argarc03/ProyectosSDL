@@ -49,9 +49,7 @@ Game::Game() {
 	//LevelText
 	objects.push_back(new Text(4 * WALL_WIDTH, 2 * WALL_WIDTH, Vector2D(WIN_WIDTH / 2 + 12 * WALL_WIDTH, 0), textures[TextureName(LevelText)]));
 
-	//Enemy
-	objects.push_back(new Enemy(Vector2D(WIN_WIDTH / 2, 3 * WALL_WIDTH + GAP_WIDTH), ENEMY_WIDTH, ENEMY_HEIGHT, this, textures[TextureName(EnemyText)]));
-	enemy = dynamic_cast<Enemy*>(*(--(objects.end())));
+	
 
 	//GameOverText
 	objects.push_back(new ScreenText(14 * WALL_WIDTH, 4 * WALL_WIDTH, Vector2D(WIN_WIDTH / 2 - 7 * WALL_WIDTH, WIN_HEIGHT / 2 - 2 * WALL_WIDTH), textures[TextureName(GameOverText)]));
@@ -298,9 +296,12 @@ void Game::update() {
 		it = next;
 	}
 
-
-	/*if (isnan<uint>( ball2->getX()))
-		cout << "me voy a narnia";*/
+	//Generate an Enemy
+	if (numEnemies < 1) {
+		int random = rand() % ENEMY_PROBABILITY + 1;
+		if (random == 1)
+			spawnEnemy();
+	}
 
 
 	if (ball->getY() >= WIN_HEIGHT + 2 * BALL_SIZE)//If the ball is under the paddle, it is lost
@@ -437,8 +438,11 @@ bool Game::collides(const SDL_Rect& rect, const Vector2D& vel, Vector2D& collVec
 		}
 	}
 	//Enemy
-	if (enemy->collides(rect, collVector))
+	if (enemy->collides(rect, collVector)) {
+		enemy->destroy();
+		numEnemies--;
 		return true;
+	}
 
 	return false;
 }
@@ -956,5 +960,19 @@ void Game::createLasers() {
 	//Creates the right Laser
 	Laser* rightLaser = new Laser({ double(paddle->getX() + (paddle->getW() - (paddle->getW() / 4))),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]);
 	setLaserInList(rightLaser);*/
+}
+
+//Spawn an enemy at a random X position at the top of the map, and inserts it in objects list
+//before the first reward
+void Game::spawnEnemy() {
+	double rndX = rand() % (WIN_WIDTH - WALL_WIDTH * 2) + blocksMap->getX();
+
+	objects.insert(firstReward, new Enemy(Vector2D(rndX, 3 * WALL_WIDTH + GAP_WIDTH), ENEMY_WIDTH, ENEMY_HEIGHT, this, textures[TextureName(EnemyText)]));
+	auto it = firstReward;
+	--it;
+	enemy = dynamic_cast<Enemy*>(*(it));
+	enemy->setItList(it);
+
+	numEnemies++;
 }
 #endif
