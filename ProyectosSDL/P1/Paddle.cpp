@@ -7,9 +7,9 @@ void Paddle::update() {
 		pos = pos + speed;
 	laserTimer++;
 	if (lasers) {
-		if(laserTimer % LASER_DELAY == 0)
+		if (laserTimer % LASER_DELAY == 0)
 			game->createLasers();
-			//lasers = false;
+		//lasers = false;
 	}
 }
 

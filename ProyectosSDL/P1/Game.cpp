@@ -2,37 +2,19 @@
 #define GameH
 
 #include "Game.h"
-#include "Texture.h"
+#include "Texture.h" 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <windows.h>
 #include <time.h>
+#include <math.h>
+//#include <SDL_ttf.h>
 
 using namespace std;
 
 Game::Game() {
-	srand(time(nullptr));
-	//CAMBIAR ESTO PARA PONER BOTONES EN SDL
-	// We ask if there is a started game and if the user wants to continue this game or start a new game
-	ifstream in;
-	in.open("save.txt");
-	bool partidaCargada = false;
-	if (in.is_open()) {
-		bool finMenu = false;
-		//create window
-		if (MessageBoxA(NULL, "¿Deseas continuar la partida?", "Se ha encontrado una partida guardada", MB_YESNO) == IDYES) {
-			finMenu = true;
-			partidaCargada = true;
-			MessageBoxA(NULL, "Partida cargada con éxito.\nPulsa Aceptar para continuar la partida.", "", MB_OK);
-		}
-		else {
-			finMenu = true;
-			remove("save.txt");
-			MessageBoxA(NULL, "Partida guardada eliminada.\nPulsa Aceptar para empezar la nueva partida.", "", MB_OK);
-		}
-	}
-	in.close();
+	srand(time(nullptr));//random seed
 
 	// We first initialize SDL
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -40,6 +22,10 @@ Game::Game() {
 		WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (window == nullptr || renderer == nullptr) throw "Error loading the SDL window or renderer";
+	string filename = IMAGES_PATH + "icon.png";
+	SDL_Surface* iconSurface = IMG_Load(filename.c_str());
+	if (iconSurface == nullptr) throw "Error loading surface from " + filename;
+	SDL_SetWindowIcon(window, iconSurface);
 
 	// We now create the textures
 	for (uint i = 0; i < NUM_TEXTURES; i++)
@@ -77,18 +63,7 @@ Game::Game() {
 	objects.push_back(new ScreenText(14 * WALL_WIDTH, 4 * WALL_WIDTH, Vector2D(WIN_WIDTH / 2 - 7 * WALL_WIDTH, WIN_HEIGHT / 2 - 2 * WALL_WIDTH), textures[TextureName(WinText)]));
 	winText = dynamic_cast<ScreenText*>(*(--(objects.end())));
 
-	if (!partidaCargada) //New game
-	{
-		createObjects();
-		//Load inicial del blocksmap
-		blocksMap->load(LEVELS_PATH + "level" + to_string(level) + ".ark", textures[TextureName(BricksText)]);
 
-	}
-	else { 
-		
-		
-		load();
-	}
 
 }
 Game::~Game() {
@@ -110,7 +85,160 @@ Game::~Game() {
 	SDL_Quit();
 }
 
+void Game::newGame() {
+	finMenu = true;
+}
+
+void Game::continueGame() {
+	finMenu = true;
+	partidaCargada = true;
+}
+
+void Game::inputText() {
+
+
+	/*TTF_Font *gFont = NULL;
+
+
+	LTexture gInputTextTexture;
+
+	//Main loop flag
+	bool quit = false;
+
+	//Event handler
+	SDL_Event e;
+
+	//Set text color as black
+	SDL_Color textColor = { 0, 0, 0, 0xFF };
+
+	//The current input text.
+	string inputText = "Some Text";
+	gInputTextTexture.loadFromRenderedText(inputText.c_str(), textColor);
+
+	//Enable text input
+	SDL_StartTextInput();
+
+	//While application is running
+	while (!quit)
+	{
+		//The rerender text flag
+		bool renderText = false;
+
+		//Handle events on queue
+		while (SDL_PollEvent(&e) != 0)
+		{
+			//User requests quit
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+			//Special key input
+			else if (e.type == SDL_KEYDOWN)
+			{
+				//Handle backspace
+				if (e.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0)
+				{
+					//lop off character
+					inputText.pop_back();
+					renderText = true;
+				}
+				//Handle copy
+				else if (e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL)
+				{
+					SDL_SetClipboardText(inputText.c_str());
+				}
+				//Handle paste
+				else if (e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL)
+				{
+					inputText = SDL_GetClipboardText();
+					renderText = true;
+				}
+			}
+			//Special text input event
+			else if (e.type == SDL_TEXTINPUT)
+			{
+				//Not copy or pasting
+				if (!((e.text.text[0] == 'c' || e.text.text[0] == 'C') && (e.text.text[0] == 'v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL))
+				{
+					//Append character
+					inputText += e.text.text;
+					renderText = true;
+				}
+			}
+		}
+
+		//Rerender text if needed
+		if (renderText)
+		{
+			//Text is not empty
+			if (inputText != "")
+			{
+				//Render new text
+				gInputTextTexture.loadFromRenderedText(inputText.c_str(), textColor);
+			}
+			//Text is empty
+			else
+			{
+				//Render space texture
+				gInputTextTexture.loadFromRenderedText(" ", textColor);
+			}
+		}
+
+		//Clear screen
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(gRenderer);
+
+		//Render text textures
+		gPromptTextTexture.render((SCREEN_WIDTH - gPromptTextTexture.getWidth()) / 2, 0);
+		gInputTextTexture.render((SCREEN_WIDTH - gInputTextTexture.getWidth()) / 2, gPromptTextTexture.getHeight());
+
+		//Update screen
+		SDL_RenderPresent(gRenderer);
+	}
+
+	//Disable text input
+	SDL_StopTextInput();*/
+
+}
+
 void Game::run() {
+
+	//MENU
+	title = new Text(600, 200, Vector2D(100, 50), textures[TextureName(TitleText)]);
+	newGameButton = new Button(250, 50, Vector2D(WIN_WIDTH / 2 - 125, WIN_HEIGHT / 2 + 100), this, 0, textures[TextureName(NewGameButtonText)]);
+
+	// We ask if there is a started game and if the user wants to continue this game or start a new game
+	ifstream in;
+	in.open("save.txt");
+
+	if (in.is_open())
+		continueGameButton = new Button(400, 50, Vector2D(WIN_WIDTH / 2 - 200, WIN_HEIGHT / 2 + 200), this, 1, textures[TextureName(ContinueGameButtonText)]);
+
+	while (!exit && !finMenu) {
+		handleEventsMenu();
+		renderMenu();
+	}
+	if (!partidaCargada) //New game
+	{
+		remove("save.txt");
+
+		createObjects();
+		//Load inicial del blocksmap
+		blocksMap->load(LEVELS_PATH + "level" + to_string(level) + ".ark", textures[TextureName(BricksText)]);
+	}
+	else //Continue game
+		load();
+
+	in.close();
+
+	delete title;
+	delete newGameButton;
+	delete continueGameButton;
+
+	timeCounter->setStartTime();
+
+
+	//GAME
 	uint32_t startTime, frameTime;
 	startTime = SDL_GetTicks();
 	while (!exit) {
@@ -118,7 +246,10 @@ void Game::run() {
 			handleEvents();
 			frameTime = SDL_GetTicks() - startTime; // Tiempo desde última actualización
 			if (frameTime >= FRAME_RATE) {
-				update();
+				if (!paused)
+					update();
+				else
+					timeCounter->update();
 				startTime = SDL_GetTicks();
 			}
 			render();
@@ -134,6 +265,31 @@ void Game::run() {
 	if (!levelWin && !gameOver)
 		save();
 }
+
+void Game::handleEventsMenu() {
+	SDL_Event event;
+	while (SDL_PollEvent(&event) && !exit) {
+		if (event.type == SDL_QUIT) {
+			exit = true;
+		}
+
+		newGameButton->handleEvent(event);
+		if (continueGameButton != nullptr)
+			continueGameButton->handleEvent(event);
+	}
+}
+
+void Game::renderMenu() {
+	SDL_RenderClear(renderer);
+
+	title->render();
+	newGameButton->render();
+	if (continueGameButton != nullptr)
+		continueGameButton->render();
+
+	SDL_RenderPresent(renderer);
+}
+
 void Game::update() {
 	for (auto it = objects.begin(); it != objects.end();) {
 		auto next = it;
@@ -143,8 +299,16 @@ void Game::update() {
 	}
 
 
+	/*if (isnan<uint>( ball2->getX()))
+		cout << "me voy a narnia";*/
+
+
 	if (ball->getY() >= WIN_HEIGHT + 2 * BALL_SIZE)//If the ball is under the paddle, it is lost
-		ballLost();
+		ballLost(ball);
+	else if (ball2 != nullptr&&ball2->getY() >= WIN_HEIGHT + 2 * BALL_SIZE)//If the ball is under the paddle, it is lost
+		ballLost(ball2);
+	else if (ball3 != nullptr&&ball3->getY() >= WIN_HEIGHT + 2 * BALL_SIZE)//If the ball is under the paddle, it is lost
+		ballLost(ball3);
 }
 
 void Game::render() const {
@@ -203,6 +367,11 @@ void Game::handleEvents() {
 		if (event.type == SDL_QUIT) {
 			exit = true;
 		}
+		else if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.sym == SDLK_s) {
+				paused = !paused;
+			}
+		}
 		paddle->handleEvents(event);
 	}
 }
@@ -236,9 +405,12 @@ bool Game::blocksMapCollision(const SDL_Rect& rect, const Vector2D& vel, Vector2
 				if (random == 1)
 					createReward(rect);
 
+				if (ball->getSuper())
+					collVector = { 0,0 };
+
 				if (blocksMap->getNumBlocks() == 0)//Checks if the level is over
 					levelWin = true;
-			}	
+			}
 			return true;
 		}
 	}
@@ -301,6 +473,8 @@ void Game::levelCompleted() {
 
 //Reset the objects in scene (paddle, ball, etc.) and update (delete and create) the counters (lifes, level, etc.).
 void Game::reset() {
+	numBalls = 1;
+
 	destroyObjects();
 	createObjects();
 
@@ -317,13 +491,13 @@ void Game::youWin() {
 	yourTimeText = dynamic_cast<Text*>(*(--(objects.end())));
 
 	//Final Score
-	objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 + 4 * WALL_WIDTH, 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, score, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 + 4 * WALL_WIDTH, 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, score, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
 	finalScore = dynamic_cast<Counter*>(*(--(objects.end())));
 	objects.push_back(new Text(10 * WALL_WIDTH, 2 * WALL_WIDTH, Vector2D(WIN_WIDTH / 2 - 5 * WALL_WIDTH, 5 * WALL_WIDTH), textures[TextureName(BestTimesText)]));
 	bestTimesText = dynamic_cast<Text*>(*(--(objects.end())));
 
 	for (int i = 0; i < HIGH_SCORE_TOP_SIZE; i++) {
-		objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 - 2 * WALL_WIDTH, 8 * WALL_WIDTH + i * 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, scores[i], NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
+		objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 - 2 * WALL_WIDTH, 8 * WALL_WIDTH + i * 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, scores[i], NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
 		scoreCounter[i] = dynamic_cast<Counter*>(*(--(objects.end())));
 	}
 }
@@ -337,7 +511,7 @@ void Game::createObjects() {
 	objects.push_back(new Ball(Vector2D(WIN_WIDTH / 2 - BALL_SIZE / 2, WIN_HEIGHT - 3 * WALL_WIDTH), BALL_SIZE, BALL_SIZE, Vector2D(0, -BALL_SPEED), this, paddle, textures[TextureName(BallText)]));
 	ball = dynamic_cast<Ball*>(*(--(objects.end())));
 	//time counter
-	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
 	timeCounter = dynamic_cast<Counter*>(*(--(objects.end())));
 	//life counter
 	objects.push_back(new LifeCounter(Vector2D(WALL_WIDTH + 2 * GAP_WIDTH, WIN_HEIGHT - WALL_WIDTH + GAP_WIDTH), PADDLE_WIDTH, WALL_WIDTH - 2 * GAP_WIDTH, TOTAL_LIVES, lives, textures[TextureName(PaddleText)]));
@@ -362,11 +536,30 @@ void Game::destroyObjects() {
 }
 
 //Decreases lifes and asks if the player is still alive.
-void Game::ballLost() {
-	lives--;
-	reset();
-	if (lives == 0)
-		gameOver = true;
+void Game::ballLost(Ball* b) {
+	numBalls--;
+	if (numBalls <= 0) {
+		lives--;
+		reset();
+		if (lives == 0)
+			gameOver = true;
+	}
+	else
+	{
+		//erase the lost ball
+		if (b == ball) { //The lost ball is the main ball
+			if (numBalls == 1) {
+				if (ball2 == nullptr)
+					ball = ball3;
+				else
+					ball = ball2;
+			}
+			else
+				ball = ball2;
+		}
+
+		objects.remove(b);
+	}
 }
 
 //Saves the game to "save.txt".
@@ -442,7 +635,8 @@ void Game::saveConfig() {
 	out << "PADDLE_MODIFY_VALUE " << PADDLE_MODIFY_VALUE << endl;
 
 	//laser
-	out << "LASER_SIZE " << LASER_SIZE << endl;
+	out << "LASER_WIDTH " << LASER_WIDTH << endl;
+	out << "LASER_HEIGHT " << LASER_HEIGHT << endl;
 	out << "LASER_SPEED " << LASER_SPEED << endl;
 	out << "LASER_DELAY " << LASER_DELAY << endl;
 
@@ -454,6 +648,7 @@ void Game::saveConfig() {
 
 	out.close();
 }
+
 
 //Loads the game from "save.txt"
 void Game::load() {
@@ -476,7 +671,7 @@ void Game::load() {
 
 	//Create some stuff before loading the rewards
 	//Time Counter
-	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
 	timeCounter = dynamic_cast<Counter*>(*(--(objects.end())));
 	//Lives Counter
 	objects.push_back(new LifeCounter(Vector2D(WALL_WIDTH + 2 * GAP_WIDTH, WIN_HEIGHT - WALL_WIDTH + GAP_WIDTH), PADDLE_WIDTH, WALL_WIDTH - 2 * GAP_WIDTH, TOTAL_LIVES, lives, textures[TextureName(PaddleText)]));
@@ -489,7 +684,7 @@ void Game::load() {
 	{
 		int rewardType;
 		in >> rewardType;												//new reward type
-		
+
 		Reward* r = nullptr;
 
 		switch (rewardType) {
@@ -507,6 +702,15 @@ void Game::load() {
 			break;
 		case StuckRew:
 			r = new StuckReward(Vector2D(0, 0), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
+			break;
+		case SuperRew:
+			r = new SuperReward(Vector2D(0, 0), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
+			break;
+		case MultipleRew:
+			r = new MultipleReward(Vector2D(0, 0), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
+			break;
+		case LaserRew:
+			r = new LaserReward(Vector2D(0, 0), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
 			break;
 		default:
 			r = new LevelReward(Vector2D(0, 0), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
@@ -608,6 +812,12 @@ void Game::createReward(const SDL_Rect& rect) {
 	case StuckRew:
 		r = new StuckReward(Vector2D(rect.x, rect.y), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
 		break;
+	case SuperRew:
+		r = new SuperReward(Vector2D(rect.x, rect.y), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
+		break;
+	case MultipleRew:
+		r = new MultipleReward(Vector2D(rect.x, rect.y), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
+		break;
 	case LaserRew:
 		r = new LaserReward(Vector2D(rect.x, rect.y), REWARD_WIDTH, REWARD_HEIGHT, Vector2D(0, REWARD_SPEED), this, textures[TextureName(RewardsText)]);
 		break;
@@ -633,6 +843,8 @@ bool Game::collidesPaddle(const SDL_Rect& rect) {
 	if (paddle->getY() <= p2.getY() && paddle->getY() + paddle->getH() > p2.getY() && paddle->getX() <= p3.getX() && paddle->getX() + paddle->getW() >= p2.getX())
 		return true;
 	return false;
+
+	
 }
 
 //Receives an iterator pointing to an object inside objects, destroy that object and erase it from the list
@@ -670,13 +882,12 @@ void Game::lifeUp() {
 
 void Game::modifyPaddle(int value) {
 	setStuckBall(false);
-	paddle->setLasers(false);
 	paddle->modifyWidth(value);
 	//ball->setPaddleOffset(value);
 }
 
 void Game::setStickyBall(bool b) {
-		ball->setSticky(b);
+	ball->setSticky(b);
 }
 
 void Game::setStuckBall(bool b) {
@@ -684,7 +895,7 @@ void Game::setStuckBall(bool b) {
 		ball->setStuck(b);
 		if (!b)
 		{
-			ball->setSpeedUp(); 
+			ball->setSpeedUp();
 			ball->setSticky(b);
 		}
 	}
@@ -694,6 +905,29 @@ bool Game::getStickyBall() {
 	return ball->getSticky();
 }
 
+void Game::setSuperBall(bool b) {
+	ball->setSuper(b);
+}
+
+void Game::multiplyBall() {
+	numBalls = numBalls + 2;
+
+	
+	objects.insert(firstReward,new Ball(Vector2D(ball->getX(), ball->getY()), BALL_SIZE, BALL_SIZE, Vector2D(ball->getSpeed().getX() - 1, ball->getSpeed().getY() + 1), this, paddle, textures[TextureName(BallText)]));
+	auto it = firstReward;
+	--it;
+	ball2 = dynamic_cast<Ball*>(*(it));
+	ball2->setStuck(false);
+
+	
+
+	objects.insert(firstReward, new Ball(Vector2D(ball->getX(), ball->getY()), BALL_SIZE, BALL_SIZE, Vector2D(ball->getSpeed().getX() + 1, ball->getSpeed().getY() + 1), this, paddle, textures[TextureName(BallText)]));
+	it = firstReward;
+	--it;
+	ball3 = dynamic_cast<Ball*>(*(it));
+	ball3->setStuck(false);
+}
+
 //Sets paddle->laser = true and deactivates other rewards
 void Game::setPaddleLasers(bool value) {
 	setStuckBall(false);
@@ -701,19 +935,26 @@ void Game::setPaddleLasers(bool value) {
 	paddle->setLasers(value);
 }
 
-void Game::setLaserInList(Laser* laser) {
-	objects.push_back(laser);
-	auto itLaser = --(objects.end());
-	laser->setItList(itLaser);
-}
-
 //Creates 2 lasers at paddle's position going upwards 
 void Game::createLasers() {
-	//Creates the left Laser
-	Laser* leftLaser = new Laser({double ( paddle->getX() + (paddle->getW() / 4)),double (paddle->getY()) }, LASER_SIZE, LASER_SIZE, { 0, -LASER_SPEED }, this, textures[BallText]);
+	objects.insert(firstReward, new Laser({ double(paddle->getX() + (paddle->getW() / 4)),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]));
+	auto it = firstReward;
+	--it;
+	Laser* leftLaser = dynamic_cast<Laser*>(*(it));
+	leftLaser->setItList(it);
+
+	objects.insert(firstReward, new Laser({ double(paddle->getX() + (paddle->getW() - (paddle->getW() / 4))),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]));
+	it = firstReward;
+	--it;
+	Laser* rightLaser = dynamic_cast<Laser*>(*(it));
+	rightLaser->setItList(it);
+
+
+	/*//Creates the left Laser
+	Laser* leftLaser = new Laser({ double(paddle->getX() + (paddle->getW() / 4)),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]);
 	setLaserInList(leftLaser);
 	//Creates the right Laser
-	Laser* rightLaser = new Laser({ double (paddle->getX() + (paddle->getW() - (paddle->getW() / 4))),double(paddle->getY()) }, LASER_SIZE, LASER_SIZE, { 0, -LASER_SPEED }, this, textures[BallText]);
-	setLaserInList(rightLaser);
+	Laser* rightLaser = new Laser({ double(paddle->getX() + (paddle->getW() - (paddle->getW() / 4))),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]);
+	setLaserInList(rightLaser);*/
 }
 #endif

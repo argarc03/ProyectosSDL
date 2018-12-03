@@ -20,8 +20,8 @@ void Enemy::update() {
 	}
 	else
 		speed = collVector;
-	
-	
+
+
 	MovingObject::update();
 	//Animation
 	currentTime++;
@@ -36,22 +36,21 @@ void Enemy::update() {
 		act();
 		//g->killObject(it);//se destruye
 	}
-
 	if (pos.getY() >= WIN_HEIGHT + 2 * BALL_SIZE)//If the reward is under the paddle, it is destroyed
 		;//g->killObject(it);//se destruye;*/
 
 }
 
-bool Enemy::collides(const SDL_Rect& ballRect, Vector2D& collVector) {
-	if (SDL_HasIntersection(&(getRect()), &ballRect)) { //Checks if there is a collision with ball
-														//collVector will be a random collision vector
-		int randomX = rand() % probability;
-		int randomY = rand() % probability;
-		collVector = { double(randomX), double(randomY) };
-		collVector.normalize();
-		return true;
-	}
+	bool Enemy::collides(const SDL_Rect& ballRect, Vector2D& collVector) {
+		if (SDL_HasIntersection(&(getRect()), &ballRect)) { //Checks if there is a collision with ball
+															//collVector will be a random collision vector
+			int randomX = rand() % probability;
+			int randomY = rand() % probability;
+			collVector = { double(randomX), double(randomY) };
+			collVector.normalize();
+			return true;
+		}
 
-	return false;
-}
+		return false;
+	}
 

@@ -27,8 +27,8 @@ public:
 	Vector2D getSpeed() { return speed; };
 
 	bool inside();
-	
-	void setLasers(bool value) { 
+
+	void setLasers(bool value) {
 		lasers = value;
 		laserTimer = 0; //Stores in laserStartTime the time at which the lasers started
 	};

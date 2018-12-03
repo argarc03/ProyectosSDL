@@ -6,10 +6,9 @@ class LaserReward :
 public:
 	LaserReward() {};
 	LaserReward(Vector2D pos, uint w, uint h, Vector2D speed, Game* g, Texture* t) :
-		Reward(pos, w, h, speed, 6, g, t) {};
+		Reward(pos, w, h, speed, 7, g, t) {};
 
 	~LaserReward() {};
 
 	void act();
 };
-

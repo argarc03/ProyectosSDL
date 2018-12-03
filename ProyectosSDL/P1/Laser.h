@@ -16,4 +16,3 @@ public:
 	virtual void update();
 	void setItList(list<ArkanoidObject*>::iterator it);
 };
-

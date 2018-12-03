@@ -1,7 +1,6 @@
 c:\users\pccom\desktop\proyectossdl\p1\debug\vc141.pdb
 c:\users\pccom\desktop\proyectossdl\p1\debug\vc141.idb
-c:\users\pccom\desktop\proyectossdl\p1\debug\reward.obj
-c:\users\pccom\desktop\proyectossdl\p1\debug\paddle.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\multiplereward.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\movingobject.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\main.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\lifereward.obj
@@ -10,11 +9,11 @@ c:\users\pccom\desktop\proyectossdl\p1\debug\levelreward.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\levelcounter.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\lengthenreward.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\gameobject.obj
-c:\users\pccom\desktop\proyectossdl\p1\debug\game.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\filenotfounderror.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\fileformaterror.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\enemy.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\counter.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\button.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\blocksmap.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\block.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\ball.obj
@@ -24,16 +23,17 @@ c:\users\pccom\desktop\proyectossdl\p1\debug\wall.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\vector2d.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\texture.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\text.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\superreward.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\stuckreward.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\shortenreward.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\sdlerror.obj
 c:\users\pccom\desktop\proyectossdl\p1\debug\screentext.obj
-d:\universidad\c++\practica 2\proyectossdl\bin\p1debug.exe
-d:\universidad\c++\practica 2\proyectossdl\bin\p1debug.ilk
-d:\universidad\c++\practica 2\proyectossdl\bin\p1debug.pdb
-c:\users\pccom\desktop\proyectossdl\bin\p1debug.ilk
+c:\users\pccom\desktop\proyectossdl\p1\debug\reward.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\paddle.obj
+c:\users\pccom\desktop\proyectossdl\p1\debug\game.obj
 c:\users\pccom\desktop\proyectossdl\bin\p1debug.exe
+c:\users\pccom\desktop\proyectossdl\bin\p1debug.ilk
 c:\users\pccom\desktop\proyectossdl\bin\p1debug.pdb
-c:\users\pccom\desktop\proyectossdl\p1\debug\game.obj.enc
 c:\users\pccom\desktop\proyectossdl\p1\debug\p1.tlog\cl.command.1.tlog
 c:\users\pccom\desktop\proyectossdl\p1\debug\p1.tlog\cl.read.1.tlog
 c:\users\pccom\desktop\proyectossdl\p1\debug\p1.tlog\cl.write.1.tlog

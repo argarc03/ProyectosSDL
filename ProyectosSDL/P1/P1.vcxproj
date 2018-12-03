@@ -73,7 +73,10 @@
     <Import Project="..\ProyectosSDL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -81,6 +84,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -140,12 +146,14 @@
     <ClCompile Include="LifeReward.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="MultipleReward.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="Reward.cpp" />
     <ClCompile Include="ScreenText.cpp" />
     <ClCompile Include="SDLError.cpp" />
     <ClCompile Include="ShortenReward.cpp" />
     <ClCompile Include="StuckReward.cpp" />
+    <ClCompile Include="SuperReward.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vector2D.cpp" />
@@ -172,12 +180,14 @@
     <ClInclude Include="LifeCounter.h" />
     <ClInclude Include="LifeReward.h" />
     <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="MultipleReward.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="Reward.h" />
     <ClInclude Include="ScreenText.h" />
     <ClInclude Include="SDLError.h" />
     <ClInclude Include="ShortenReward.h" />
     <ClInclude Include="StuckReward.h" />
+    <ClInclude Include="SuperReward.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector2D.h" />

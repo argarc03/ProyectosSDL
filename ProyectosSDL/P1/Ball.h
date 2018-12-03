@@ -12,6 +12,7 @@ private:
 	bool stuck = true;//pegado
 	bool sticky = false;//pegajoso
 	double paddleOffset = 0;
+	bool super = false;//atraviesa
 public:
 	Ball() {};
 	Ball(Vector2D pos, uint w, uint h, Vector2D speed, Game* game, Paddle* paddle, Texture* t) :
@@ -30,5 +31,13 @@ public:
 	void setSpeedUp();
 	void setPaddleOffset();
 	void setPaddleOffset(int value);
+
+	bool getSuper() { return super; }
+	void setSuper(bool b) { super = b; }
+
+	Vector2D getSpeed() { return speed; };
+
+	virtual void loadFromFile(ifstream& in);
+	virtual void saveToFile(ofstream& out);
 };
 

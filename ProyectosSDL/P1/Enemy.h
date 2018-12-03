@@ -18,7 +18,7 @@ public:
 
 	virtual void render() const;
 	void update();
-
 	bool collides(const SDL_Rect& ballRect, Vector2D& collVector);
+
 };
 

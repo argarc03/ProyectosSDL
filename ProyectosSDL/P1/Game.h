@@ -3,6 +3,9 @@
 #include "SDL_image.h"
 #include "checkML.h"
 #include <list>
+
+#include "Button.h"
+
 #include "Vector2D.h"
 #include "Wall.h"
 #include "BlocksMap.h"
@@ -16,40 +19,36 @@
 #include "LevelReward.h"
 #include "LifeReward.h"
 #include "LengthenReward.h"
-#include "LaserReward.h"
 #include "Laser.h"
+#include "LaserReward.h"
 #include "ShortenReward.h"
 #include "StuckReward.h"
+#include "SuperReward.h"
+#include "MultipleReward.h"
 #include "Enemy.h"
 
 /*
+	NOTAS:
+	- LA MULTIPLICACION DE BOLAS NO FUNCIONA. HABRIA QUE CONSIDERAR LOS PUNTEROS DE BALL2 Y BALL3 AL IGUAL QUE SE HACE CON EL DE
+	  BALL. ADEMAS, SE DEBERIAN DE GUARDAR LA POSICION DE LAS OTRAS BOLAS CREADAS.
+	- ARREGLAR COUNTER, PUES SIGUE CORRIENDO AUNQUE ESTES EN PAUSA O EN EL MENU.
+
 	TO-DO:
-	- Reestructurar la clase game
-	- Falta implementar metodos saveFromFile() y loadFromFile()
 	- Falta implementar Reward
 	- Comprobar que el include checkML.h están en todos los ficheros para que no haya basura (¿también en cpp?)
 	- Comprobar que todos estan en #pragma once
 	- Comprobar que no sobran includes
-	- (Opcional) Quitar punteros de gameoverText, winText, levelcompletedText.
+	- Resolver warnings
 
 	PREGUNTAS:
-	- ¿Cómo accedo a un objeto de la lista o hace falta tener punteros a él fuera?
-	- ¿Hace falta poner posiciones, tamaños, etc. en double? (saltan muchos warnings por conversión)
 
 	BUGS:
 	- La bola atraviesa el paddle cuando se mueve muy horizontalmente.
-	- A veces firstReward se pone NULL (Lasers?),
-		y da error al crear un nuevo Reward
-		-También en killReward -> el problema está en los if(it == firstReward)
-
-	MEJORAS:
-	- Quitar los castings (ver enunciado de la práctica)
-	- Destructores virtuales?
 */
 
 typedef unsigned int uint;
 
-const uint NUM_TEXTURES = 15;
+const uint NUM_TEXTURES = 19;
 const uint NUM_WALLS = 3;
 
 const uint NUM_TEMPORAL_OBJECTS = 5;
@@ -85,10 +84,11 @@ const int REWARD_PROBABILITY = 1;
 const uint REWARD_WIDTH = 40;
 const uint REWARD_HEIGHT = 20;
 const int REWARD_SPEED = 3;
-const uint NUM_REWARDS = 5;
+const uint NUM_REWARDS = 8;
 const int PADDLE_MODIFY_VALUE = 50; //Paddle width modifier's constant value
 
-const uint LASER_SIZE = 10;
+const uint LASER_WIDTH = 7;
+const uint LASER_HEIGHT = 23;
 const int LASER_SPEED = 10;
 const uint LASER_DELAY = 40;
 
@@ -97,9 +97,11 @@ const int ENEMY_SPEED = 3;
 const int ENEMY_WIDTH = 30;
 const int ENEMY_HEIGHT = 40;
 
-enum TextureName { SideText, TopSideText, BricksText, PaddleText, BallText, DigitsText, TimeText, GameOverText, LevelCompletedText, WinText, LevelText, YourTimeText, BestTimesText, RewardsText, EnemyText };
+enum TextureName { SideText, TopSideText, BricksText, PaddleText, BallText, DigitsText, TimeText,
+	GameOverText, LevelCompletedText, WinText, LevelText, YourTimeText, BestTimesText, RewardsText,
+	EnemyText, NewGameButtonText, TitleText, ContinueGameButtonText, LaserText };
 enum WallName { LeftWall, RightWall, TopWall };
-enum RewardType { LevelRew, LifeRew, LengthenRew, ShortenRew, StuckRew, LaserRew };
+enum RewardType { LevelRew, LifeRew, LengthenRew, ShortenRew, StuckRew, SuperRew, MultipleRew, LaserRew };
 
 struct TextureAtributes {
 	string filename;
@@ -122,20 +124,28 @@ const WallAtributes wallAtrib[NUM_WALLS] = {
 
 const TextureAtributes textureAtrib[NUM_TEXTURES] = {
 	{"side.png",1,1},{"topside.png",1,1},{"bricks.png",2,3},{"paddle.png",1,1},{"ball.png",1,1},{"digits.png",3,4},{"timeText.png",1,1},
-	{"gameOverText.png",1,1},{"levelCompletedText.png",1,1},{"winText.png",1,1},{"levelText.png",1,1},{"yourTimeText.png",1,1},{"bestTimesText.png",1,1},{"rewards.png",10,8},{"enemy.png",1,8} };
+	{"gameOverText.png",1,1},{"levelCompletedText.png",1,1},{"winText.png",1,1},{"levelText.png",1,1},{"yourTimeText.png",1,1},{"bestTimesText.png",1,1},
+	{"rewards.png",10,8},{"enemy.png",1,8}, {"newGameButton.png",1,3}, {"title.png",1,1}, {"continueGameButton.png",1,3}, {"laser.png",1,1} };
 
 class Game {
 private:
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 
+	bool finMenu = false;
+	bool partidaCargada = false;
+
 	bool exit = false;
 	bool gameOver = false;
 	bool levelWin = false;
 
-	uint level = 2;
+	bool paused = false;
+
+	uint level = 1;
 	uint startTime = 0;
 	uint lives = TOTAL_LIVES;
+
+	uint numBalls = 1;
 
 	int scores[HIGH_SCORE_TOP_SIZE];
 	uint score = 0;
@@ -146,8 +156,14 @@ private:
 	list<ArkanoidObject*>::iterator lastLevelObject = objects.end();
 	uint numRewards = 0;
 
+	Text* title = nullptr;
+	Button* newGameButton = nullptr;
+	Button* continueGameButton = nullptr;
+
 	BlocksMap* blocksMap = nullptr;
 	Ball* ball = nullptr;
+	Ball* ball2 = nullptr;
+	Ball* ball3 = nullptr;
 	Paddle* paddle = nullptr;
 	Enemy* enemy = nullptr;
 
@@ -180,11 +196,18 @@ public:
 	void renderWin()const;
 	void renderScore()const;
 
+	void handleEventsMenu();
+
+	void renderMenu();
+
 	void handleEvents();
+
 	void update();
 
 	bool wallCollision(const SDL_Rect& rect, const Vector2D& vel, Vector2D& collVector);
 	bool blocksMapCollision(const SDL_Rect& rect, const Vector2D& vel, Vector2D& collVector, bool destroy);
+
+
 	bool collides(const SDL_Rect& rect, const Vector2D& vel, Vector2D& collVector);
 	bool collidesPaddle(const SDL_Rect& rect);
 	void levelCompleted();
@@ -192,7 +215,7 @@ public:
 	void youWin();
 	void createObjects();
 	void destroyObjects();
-	void ballLost();
+	void ballLost(Ball* b);
 
 	void save();
 	void saveConfig();
@@ -214,14 +237,25 @@ public:
 
 	void lifeUp();
 	void modifyPaddle(int value);
-	
+
 	void setStickyBall(bool b);
 	void setStuckBall(bool b);
 	bool getStickyBall();
 
 	void setPaddleLasers(bool value);
 	void createLasers();
-	void setLaserInList(Laser* laser);
+
+	void setSuperBall(bool b);
+
+	void multiplyBall();
+
+	void newGame();
+	void continueGame();
+
+	void inputText();
+
+	bool isPaused() { return paused; };
+	//bool ballInside
 };
 
 
