@@ -217,9 +217,9 @@ public:
 	void destroyObjects();
 	void ballLost(Ball* b);
 
-	void save();
+	void save(string filename);
 	void saveConfig();
-	void load();
+	void load(string filename);
 	template <typename T>
 	void loadFromConfig(T parameter);
 
@@ -252,7 +252,8 @@ public:
 	void newGame();
 	void continueGame();
 
-	void inputText();
+	string inputTextLoad();
+	string inputTextSave();
 
 	bool isPaused() { return paused; };
 	//bool ballInside

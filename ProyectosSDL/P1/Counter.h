@@ -12,15 +12,14 @@ private:
 	uint totalDigits = 0;
 	uint initialNumber = 0;
 	uint number = 0;
-	int countdown = 1;
+
+	int saveTime = 0;
 
 	double startTime = 0;
 
-	Game* game = nullptr;
-
 	int* digits;
 public:
-	Counter(Vector2D pos, uint w, uint h, uint initialNumber, uint totalDigits, Game* game, Texture* t) : ArkanoidObject(w, h, pos, t), initialNumber(initialNumber), totalDigits(totalDigits), game(game) {
+	Counter(Vector2D pos, uint w, uint h, uint initialNumber, uint totalDigits, Texture* t) : ArkanoidObject(w, h, pos, t), initialNumber(initialNumber), totalDigits(totalDigits) {
 		digits = new int[totalDigits];
 
 		startTime = 0;
@@ -42,4 +41,6 @@ public:
 	virtual void loadFromFile(ifstream& in);
 	// Saves to file the Counter's number
 	virtual void saveToFile(ofstream& out);
+
+	void setSaveTime();
 };

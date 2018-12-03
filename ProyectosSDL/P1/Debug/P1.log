@@ -1,22 +1,18 @@
-﻿  Counter.cpp
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(31): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(32): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.h(29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.cpp(9): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.cpp(16): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.cpp(43): error C2059: error de sintaxis: ';'
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.cpp(45): warning C4244: '=': conversión de 'double' a 'uint'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.cpp(47): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-  Game.cpp
+﻿  Game.cpp
 c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\crtdbg.h(303): warning C4005: '_malloca': redefinición de macro
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\malloc.h(122): note: vea la definición anterior de '_malloca'
 c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(31): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
 c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(32): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.h(29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.h(28): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
 c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(17): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(397): warning C4018: '<': no coinciden signed/unsigned
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(430): warning C4018: '>': no coinciden signed/unsigned
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(683): warning C4018: '<': no coinciden signed/unsigned
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(752): warning C4018: '<': no coinciden signed/unsigned
-c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(781): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(334): warning C4018: '<': no coinciden signed/unsigned
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(367): warning C4018: '>': no coinciden signed/unsigned
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(630): warning C4018: '<': no coinciden signed/unsigned
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(699): warning C4018: '<': no coinciden signed/unsigned
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\game.cpp(728): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+  Laser.cpp
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(31): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\arkanoidobject.h(32): warning C4244: 'return': conversión de 'double' a 'uint'; posible pérdida de datos
+c:\users\pccom\desktop\merge\proyectossdl\proyectossdl\p1\counter.h(28): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
   Generando código...
+  P1.vcxproj -> C:\Users\PcCom\Desktop\Merge\ProyectosSDL\ProyectosSDL\bin\P1Debug.exe

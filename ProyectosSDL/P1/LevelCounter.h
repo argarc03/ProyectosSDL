@@ -5,7 +5,7 @@ class LevelCounter :
 {
 public:
 	LevelCounter(Vector2D pos, uint w, uint h, uint initialNumber, uint totalDigits, Texture* t) : 
-		Counter( pos,  w,  h,  initialNumber,  totalDigits, nullptr, t){};
+		Counter( pos,  w,  h,  initialNumber,  totalDigits, t){};
 	~LevelCounter() {};
 
 

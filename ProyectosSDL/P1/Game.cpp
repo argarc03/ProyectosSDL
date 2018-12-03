@@ -94,111 +94,48 @@ void Game::continueGame() {
 	partidaCargada = true;
 }
 
-void Game::inputText() {
+string Game::inputTextLoad() {
+	string s = "";
 
+	cout << "Introduce un código numérico: ";
+	//LIMITAR PARA QUE SEA NUMERICO
+	cin >> s;
+	s += ".txt";
 
-	/*TTF_Font *gFont = NULL;
-
-
-	LTexture gInputTextTexture;
-
-	//Main loop flag
-	bool quit = false;
-
-	//Event handler
-	SDL_Event e;
-
-	//Set text color as black
-	SDL_Color textColor = { 0, 0, 0, 0xFF };
-
-	//The current input text.
-	string inputText = "Some Text";
-	gInputTextTexture.loadFromRenderedText(inputText.c_str(), textColor);
-
-	//Enable text input
-	SDL_StartTextInput();
-
-	//While application is running
-	while (!quit)
-	{
-		//The rerender text flag
-		bool renderText = false;
-
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0)
-		{
-			//User requests quit
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-			//Special key input
-			else if (e.type == SDL_KEYDOWN)
-			{
-				//Handle backspace
-				if (e.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0)
-				{
-					//lop off character
-					inputText.pop_back();
-					renderText = true;
-				}
-				//Handle copy
-				else if (e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL)
-				{
-					SDL_SetClipboardText(inputText.c_str());
-				}
-				//Handle paste
-				else if (e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL)
-				{
-					inputText = SDL_GetClipboardText();
-					renderText = true;
-				}
-			}
-			//Special text input event
-			else if (e.type == SDL_TEXTINPUT)
-			{
-				//Not copy or pasting
-				if (!((e.text.text[0] == 'c' || e.text.text[0] == 'C') && (e.text.text[0] == 'v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL))
-				{
-					//Append character
-					inputText += e.text.text;
-					renderText = true;
-				}
-			}
-		}
-
-		//Rerender text if needed
-		if (renderText)
-		{
-			//Text is not empty
-			if (inputText != "")
-			{
-				//Render new text
-				gInputTextTexture.loadFromRenderedText(inputText.c_str(), textColor);
-			}
-			//Text is empty
-			else
-			{
-				//Render space texture
-				gInputTextTexture.loadFromRenderedText(" ", textColor);
-			}
-		}
-
-		//Clear screen
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderClear(gRenderer);
-
-		//Render text textures
-		gPromptTextTexture.render((SCREEN_WIDTH - gPromptTextTexture.getWidth()) / 2, 0);
-		gInputTextTexture.render((SCREEN_WIDTH - gInputTextTexture.getWidth()) / 2, gPromptTextTexture.getHeight());
-
-		//Update screen
-		SDL_RenderPresent(gRenderer);
+	ifstream in;
+	in.open(s);
+	while (!in.is_open()) {
+		cout << "No existe un archivo con ese nombre." << endl;
+		cout << "Introduce un código numérico: ";
+		cin >> s;
+		s += ".txt";
+		in.open(s);
 	}
+	in.close();
 
-	//Disable text input
-	SDL_StopTextInput();*/
+	return s;
+}
 
+string Game::inputTextSave() {
+	string s = "";
+
+	cout << "Introduce un código numérico: ";
+	//LIMITAR PARA QUE SEA NUMERICO
+	cin >> s;
+	s += ".txt";
+
+	ifstream in;
+	in.open(s);
+	while (in.is_open()) {
+		cout << "Ya existe un archivo con ese nombre." << endl;
+		cout << "Introduce un código numérico: ";
+		cin >> s;
+		s += ".txt";
+		in.open(s);
+	}
+	in.close();
+
+	return s;
 }
 
 void Game::run() {
@@ -206,30 +143,25 @@ void Game::run() {
 	//MENU
 	title = new Text(600, 200, Vector2D(100, 50), textures[TextureName(TitleText)]);
 	newGameButton = new Button(250, 50, Vector2D(WIN_WIDTH / 2 - 125, WIN_HEIGHT / 2 + 100), this, 0, textures[TextureName(NewGameButtonText)]);
+	continueGameButton = new Button(400, 50, Vector2D(WIN_WIDTH / 2 - 200, WIN_HEIGHT / 2 + 200), this, 1, textures[TextureName(ContinueGameButtonText)]);
 
 	// We ask if there is a started game and if the user wants to continue this game or start a new game
-	ifstream in;
-	in.open("save.txt");
-
-	if (in.is_open())
-		continueGameButton = new Button(400, 50, Vector2D(WIN_WIDTH / 2 - 200, WIN_HEIGHT / 2 + 200), this, 1, textures[TextureName(ContinueGameButtonText)]);
-
 	while (!exit && !finMenu) {
 		handleEventsMenu();
 		renderMenu();
 	}
 	if (!partidaCargada) //New game
 	{
-		remove("save.txt");
+		//in.open
+
+		//remove "save.txt"
 
 		createObjects();
 		//Load inicial del blocksmap
 		blocksMap->load(LEVELS_PATH + "level" + to_string(level) + ".ark", textures[TextureName(BricksText)]);
 	}
 	else //Continue game
-		load();
-
-	in.close();
+		load("");
 
 	delete title;
 	delete newGameButton;
@@ -262,8 +194,10 @@ void Game::run() {
 			exit = true;
 		}
 	}
-	if (!levelWin && !gameOver)
-		save();
+	if (!levelWin && !gameOver) {
+		/*timeCounter->setSaveTime();
+		save("");*/
+	}
 }
 
 void Game::handleEventsMenu() {
@@ -369,7 +303,10 @@ void Game::handleEvents() {
 		}
 		else if (event.type == SDL_KEYDOWN) {
 			if (event.key.keysym.sym == SDLK_s) {
-				paused = !paused;
+				paused = true;
+				timeCounter->setSaveTime();
+				save("");
+				exit = true;
 			}
 		}
 		paddle->handleEvents(event);
@@ -491,13 +428,13 @@ void Game::youWin() {
 	yourTimeText = dynamic_cast<Text*>(*(--(objects.end())));
 
 	//Final Score
-	objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 + 4 * WALL_WIDTH, 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, score, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 + 4 * WALL_WIDTH, 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, score, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
 	finalScore = dynamic_cast<Counter*>(*(--(objects.end())));
 	objects.push_back(new Text(10 * WALL_WIDTH, 2 * WALL_WIDTH, Vector2D(WIN_WIDTH / 2 - 5 * WALL_WIDTH, 5 * WALL_WIDTH), textures[TextureName(BestTimesText)]));
 	bestTimesText = dynamic_cast<Text*>(*(--(objects.end())));
 
 	for (int i = 0; i < HIGH_SCORE_TOP_SIZE; i++) {
-		objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 - 2 * WALL_WIDTH, 8 * WALL_WIDTH + i * 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, scores[i], NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
+		objects.push_back(new Counter(Vector2D(WIN_WIDTH / 2 - 2 * WALL_WIDTH, 8 * WALL_WIDTH + i * 2 * WALL_WIDTH), 4 * WALL_WIDTH, 2 * WALL_WIDTH, scores[i], NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
 		scoreCounter[i] = dynamic_cast<Counter*>(*(--(objects.end())));
 	}
 }
@@ -511,7 +448,7 @@ void Game::createObjects() {
 	objects.push_back(new Ball(Vector2D(WIN_WIDTH / 2 - BALL_SIZE / 2, WIN_HEIGHT - 3 * WALL_WIDTH), BALL_SIZE, BALL_SIZE, Vector2D(0, -BALL_SPEED), this, paddle, textures[TextureName(BallText)]));
 	ball = dynamic_cast<Ball*>(*(--(objects.end())));
 	//time counter
-	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
 	timeCounter = dynamic_cast<Counter*>(*(--(objects.end())));
 	//life counter
 	objects.push_back(new LifeCounter(Vector2D(WALL_WIDTH + 2 * GAP_WIDTH, WIN_HEIGHT - WALL_WIDTH + GAP_WIDTH), PADDLE_WIDTH, WALL_WIDTH - 2 * GAP_WIDTH, TOTAL_LIVES, lives, textures[TextureName(PaddleText)]));
@@ -562,10 +499,14 @@ void Game::ballLost(Ball* b) {
 	}
 }
 
-//Saves the game to "save.txt".
-void Game::save() {
+//Saves the game to filename.txt.
+void Game::save(string filename) {
+
+	filename = inputTextSave();
+
+
 	ofstream out;
-	out.open("save.txt");
+	out.open(filename);
 
 	blocksMap->save(out);						//blocksmap
 	out << level << endl;						//level
@@ -650,11 +591,17 @@ void Game::saveConfig() {
 }
 
 
-//Loads the game from "save.txt"
-void Game::load() {
-	blocksMap->load("save.txt", textures[TextureName(BricksText)]); //blocksmap
+//Loads the game from filename.txt
+void Game::load(string filename) {
+
+	filename = inputTextLoad();
+
+
+
+
+	blocksMap->load(filename, textures[TextureName(BricksText)]); //blocksmap
 	ifstream in;
-	in.open("save.txt");
+	in.open(filename);
 	string s;
 	for (uint i = 0; i < blocksMap->getnRows() + 1; i++) getline(in, s); //ignore the blocksmap lines in the file
 	in >> level;														//level
@@ -671,7 +618,7 @@ void Game::load() {
 
 	//Create some stuff before loading the rewards
 	//Time Counter
-	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, this, textures[TextureName(DigitsText)]));
+	objects.push_back(new Counter(Vector2D(3 * WALL_WIDTH + 2 * WALL_WIDTH, 0), 4 * WALL_WIDTH, 2 * WALL_WIDTH, startTime, NUM_DIGITS_SCORE, textures[TextureName(DigitsText)]));
 	timeCounter = dynamic_cast<Counter*>(*(--(objects.end())));
 	//Lives Counter
 	objects.push_back(new LifeCounter(Vector2D(WALL_WIDTH + 2 * GAP_WIDTH, WIN_HEIGHT - WALL_WIDTH + GAP_WIDTH), PADDLE_WIDTH, WALL_WIDTH - 2 * GAP_WIDTH, TOTAL_LIVES, lives, textures[TextureName(PaddleText)]));
@@ -948,13 +895,5 @@ void Game::createLasers() {
 	--it;
 	Laser* rightLaser = dynamic_cast<Laser*>(*(it));
 	rightLaser->setItList(it);
-
-
-	/*//Creates the left Laser
-	Laser* leftLaser = new Laser({ double(paddle->getX() + (paddle->getW() / 4)),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]);
-	setLaserInList(leftLaser);
-	//Creates the right Laser
-	Laser* rightLaser = new Laser({ double(paddle->getX() + (paddle->getW() - (paddle->getW() / 4))),double(paddle->getY()) }, LASER_WIDTH, LASER_HEIGHT, { 0, -LASER_SPEED }, this, textures[LaserText]);
-	setLaserInList(rightLaser);*/
 }
 #endif

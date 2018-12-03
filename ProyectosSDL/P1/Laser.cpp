@@ -7,7 +7,7 @@ void Laser::update() {
 
 	//Collision
 	Vector2D aux = { 0,0 };
-	if (game->blocksMapCollision(getRect(), speed, aux, true) || getY() < 4 * WALL_WIDTH) { //Asks the game if there is a collision with either the blocksMap or the topWall
+	if (game->blocksMapCollision(getRect(), speed, aux, true) || getY() < 3 * WALL_WIDTH) { //Asks the game if there is a collision with either the blocksMap or the topWall
 		game->killObject(it);//gets destroyed
 	}
 }
