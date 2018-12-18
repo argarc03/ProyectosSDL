@@ -1,1 +1,0 @@
-# ILLO, VAMO A PROGRAMÁH
